@@ -536,6 +536,10 @@ namespace Nes
 			}
 		}
 
+		byte * Machine::GetVRam() {
+			return ppu.GetVRam();
+		}
+
 		NES_POKE_D(Machine,4016)
 		{
 			extPort->Poke( data );

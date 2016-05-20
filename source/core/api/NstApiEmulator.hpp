@@ -103,6 +103,10 @@ namespace Nes
 			{
 				return machine;
 			}
+
+			Core::Machine& getMachine() {
+				return machine;
+			}
 		};
 	}
 }

@@ -23,9 +23,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include <cstring>
+#include <iostream>
 #include "NstCpu.hpp"
 #include "NstPpu.hpp"
 #include "NstState.hpp"
+#include <windows.h>
 
 namespace Nes
 {
@@ -278,6 +280,7 @@ namespace Nes
 			screen.Clear();
 		}
 
+
 		uint Ppu::SetAddressLineHook(const Core::Io::Line& line)
 		{
 			io.line = line;
@@ -493,6 +496,8 @@ namespace Nes
 				(cpu.GetModel() == CPU_RP2A07) == (model == PPU_RP2C07) &&
 				(cpu.GetModel() == CPU_DENDY)  == (model == PPU_DENDY)
 			);
+
+			OutputDebugStringA("Beginning frame.\n");
 
 			oam.limit = oam.buffer + ((oam.spriteLimit || frameLock) ? Oam::STD_LINE_SPRITES*4 : Oam::MAX_LINE_SPRITES*4);
 			output.target = output.pixels;
@@ -1423,6 +1428,9 @@ namespace Nes
 				switch (cycles.hClock)
 				{
 					case 0:
+						if (scanline == 0) {
+							OutputDebugStringA("PPU cycle 0 of scanline " + scanline);
+						}
 					case 8:
 					case 16:
 					case 24:
@@ -2105,7 +2113,6 @@ namespace Nes
 
 					case HCLOCK_VBLANK_0:
 					VBlank0:
-
 						regs.status |= Regs::STATUS_VBLANKING;
 						cycles.hClock = HCLOCK_VBLANK_1;
 

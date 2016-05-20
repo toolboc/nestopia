@@ -585,31 +585,38 @@ static void check_variables(void)
 
 void retro_run(void)
 {
-   update_input();
+	if(input) {
+		update_input();
+	}
    emulator.Execute(video, audio, input);
 
-   if (Api::Input(emulator).GetConnectedController(1) == 5)
-      draw_crosshair(crossx, crossy);
-   
-   unsigned frames = is_pal ? 44100 / 50 : 44100 / 60;
-   for (unsigned i = 0; i < frames; i++)
-      audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
-   audio_batch_cb(audio_stereo_buffer, frames);
-   
-   bool updated = false;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
-   {
-      check_variables();
-      delete video;
-      video = 0;
-      video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
+   if (input) {
+	   if (Api::Input(emulator).GetConnectedController(1) == 5)
+		   draw_crosshair(crossx, crossy);
+   }
+   if (audio) {
+	   unsigned frames = is_pal ? 44100 / 50 : 44100 / 60;
+	   // for (unsigned i = 0; i < frames; i++)
+	   // audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+	   //audio_batch_cb(audio_stereo_buffer, frames);
    }
    
-   // Absolute mess of inline if statements...
-   video_cb(video_buffer + (overscan_v ? ((overscan_h ? 8 : 0) + (blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * 8) : (overscan_h ? 8 : 0) + 0),
-         video_width - (overscan_h ? 16 : 0),
-         Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
-         pitch);
+   if (video) {
+	   bool updated = false;
+	   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+	   {
+		   check_variables();
+		   delete video;
+		   video = 0;
+		   video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
+	   }
+
+	   // Absolute mess of inline if statements...
+	   video_cb(video_buffer + (overscan_v ? ((overscan_h ? 8 : 0) + (blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * 8) : (overscan_h ? 8 : 0) + 0),
+		   video_width - (overscan_h ? 16 : 0),
+		   Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
+		   pitch);
+   }
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -900,10 +907,17 @@ bool retro_unserialize(const void *data, size_t size)
 
 void *retro_get_memory_data(unsigned id)
 {
-   if (id != RETRO_MEMORY_SAVE_RAM)
-      return 0;
-
-   return sram;
+	switch (id) {
+	case RETRO_MEMORY_SAVE_RAM: {
+		return sram;
+	}
+	case RETRO_MEMORY_VIDEO_RAM: {
+		Api::Machine machine(emulator);
+		return machine.GetVRam();
+	}
+	default:
+		return sram;
+	}
 }
 
 size_t retro_get_memory_size(unsigned id)

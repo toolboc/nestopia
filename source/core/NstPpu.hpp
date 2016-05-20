@@ -34,6 +34,7 @@
 #include "NstHook.hpp"
 #include "NstMemory.hpp"
 #include "NstVideoScreen.hpp"
+#include <cstring>
 
 #ifdef NST_PRAGMA_ONCE
 #pragma once
@@ -539,6 +540,21 @@ namespace Nes
 			bool HasSpriteLimit() const
 			{
 				return oam.spriteLimit;
+			}
+			// Copy all pallete, oam, and nametable data to a byte array
+			byte * GetVRam() 
+			{
+				// Init array
+				byte *vRam;
+				int scrollSize = sizeof(Scroll);
+				vRam = new byte[32 + 256 + 2048 + scrollSize];
+				// Copy palette, oam, and nametable
+				memcpy(vRam, palette.ram, 32);
+				memcpy(vRam + 32, oam.ram, 256);
+				memcpy(vRam + 32 + 256, nameTable.ram, 2048);
+				memcpy(vRam + 32 + 256 + 2048, &scroll, scrollSize);
+
+				return vRam;
 			}
 		};
 	}

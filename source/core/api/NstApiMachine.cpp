@@ -265,8 +265,11 @@ namespace Nes
 			{
 				return RESULT_ERR_GENERIC;
 			}
-
 			return RESULT_OK;
+		}
+
+		void * Machine::GetVRam() {			
+			return emulator.GetVRam();
 		}
 
 		#ifdef NST_MSVC_OPTIMIZE

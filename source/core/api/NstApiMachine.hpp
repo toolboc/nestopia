@@ -310,6 +310,8 @@ namespace Nes
 			*/
 			Result SaveState(std::ostream& stream,Compression compression=USE_COMPRESSION) const throw();
 
+			void *GetVRam();
+
 			/**
 			* Returns a machine state.
 			*
