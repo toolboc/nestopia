@@ -536,7 +536,7 @@ namespace Nes
 			}
 		}
 
-		byte * Machine::GetVRam() {
+		void *Machine::GetVRam() {
 			return ppu.GetVRam();
 		}
 

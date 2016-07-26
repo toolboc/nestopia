@@ -497,7 +497,10 @@ namespace Nes
 				(cpu.GetModel() == CPU_DENDY)  == (model == PPU_DENDY)
 			);
 
-			OutputDebugStringA("Beginning frame.\n");
+			OutputDebugStringA("PPU Begin Frame\n");
+			debugOutput.clear();
+
+			ppuSnapshot.reset();
 
 			oam.limit = oam.buffer + ((oam.spriteLimit || frameLock) ? Oam::STD_LINE_SPRITES*4 : Oam::MAX_LINE_SPRITES*4);
 			output.target = output.pixels;
@@ -575,8 +578,11 @@ namespace Nes
 
 		void Ppu::EndFrame()
 		{
+			OutputDebugStringA("PPU End Frame\n");
+			CopyVramData();
 			if (cycles.count != Cpu::CYCLE_MAX)
 			{
+				OutputDebugStringA("Max thing not reached?\n");
 				cycles.count = Cpu::CYCLE_MAX;
 				Run();
 			}
@@ -750,6 +756,7 @@ namespace Nes
 
 			if (cpu.GetCycles() >= cycles.reset)
 			{
+				ppuSnapshot.writeScrollValue(scanline, high, (data & 0x03));
 				scroll.latch = (scroll.latch & 0x73FF) | (data & 0x03) << 10;
 				oam.height = (data >> 2 & 8) + 8;
 
@@ -905,11 +912,15 @@ namespace Nes
 
 				if (scroll.toggle ^= 1)
 				{
+					ppuSnapshot.writeScrollValue(scanline, x, data);
+					OutputDebugStringA("$2005 poke X!");
 					scroll.latch = (scroll.latch & 0x7FE0) | (data >> 3);
 					scroll.xFine = data & 0x7;
 				}
 				else
 				{
+					ppuSnapshot.writeScrollValue(scanline, y, data);
+					OutputDebugStringA("$2005 poke Y!");
 					scroll.latch = (scroll.latch & 0x0C1F) | ((data << 2 | data << 12) & 0x73E0);
 				}
 			}
@@ -1428,9 +1439,6 @@ namespace Nes
 				switch (cycles.hClock)
 				{
 					case 0:
-						if (scanline == 0) {
-							OutputDebugStringA("PPU cycle 0 of scanline " + scanline);
-						}
 					case 8:
 					case 16:
 					case 24:
@@ -3039,6 +3047,17 @@ namespace Nes
 			}
 
 			cycles.count = GetCycles();
+		}
+		void Ppu::CopyVramData()
+		{
+			// Copy pattern (sprite, bg graphics) tables
+			memcpy(&ppuSnapshot.patternTables[0].data, &tiles.pattern[0], 4096);
+			memcpy(&ppuSnapshot.patternTables[1].data, &tiles.pattern[1], 4096);
+			// Copy first two nametables (bg layout) that is stored in RAM
+			memcpy(&ppuSnapshot.nameTables[0].data, &nameTable.ram, 1024);
+			memcpy(&ppuSnapshot.nameTables[1].data, &nameTable.ram + 1024, 1024);
+			// Copy over the OAM
+			memcpy(&ppuSnapshot.oam[0], &oam.ram[0], 256);
 		}
 	}
 }
