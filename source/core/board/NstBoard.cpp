@@ -165,6 +165,8 @@
 #include "NstBoardBmcVrc4.hpp"
 #include "NstBoardBmcVt5201.hpp"
 #include "NstBoardBmcY2k64in1.hpp"
+#include <cstring>
+#include <stdio.h>
 
 namespace Nes
 {

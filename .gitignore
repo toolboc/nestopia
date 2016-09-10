@@ -10,3 +10,11 @@
 *.js
 *.bc
 .npmignore
+/libretro/msvc/msvc-2010/Debug
+/libretro/msvc/msvc-2010/Release
+*.db
+/libretro/msvc/msvc-2010.sdf
+/libretro/msvc/msvc-2010/msvc-2010.vcxproj.user
+/libretro/msvc/msvc-2010/.vs/msvc-2010/v14
+/libretro/msvc/.vs/msvc-2010/v14
+*.opendb

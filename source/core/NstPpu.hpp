@@ -34,7 +34,8 @@
 #include "NstHook.hpp"
 #include "NstMemory.hpp"
 #include "NstVideoScreen.hpp"
-#include <cstring>
+#include <string>
+#include "VxlRawPPU.h"
 
 #ifdef NST_PRAGMA_ONCE
 #pragma once
@@ -127,6 +128,10 @@ namespace Nes
 
 		private:
 
+			VxlRawPPU ppuSnapshot = VxlRawPPU();
+
+			std::string debugOutput = "";
+
 			struct Chr : ChrMem
 			{
 				NST_FORCE_INLINE uint FetchPattern(uint) const;
@@ -216,6 +221,8 @@ namespace Nes
 			NST_FORCE_INLINE void RenderPixel();
 			NST_SINGLE_CALL void RenderPixel255();
 			NST_NO_INLINE void Run();
+
+			void CopyVramData();
 
 			struct Regs
 			{
@@ -359,6 +366,7 @@ namespace Nes
 				uint height;
 				uint mask;
 				byte show[2];
+
 				bool spriteZeroInLine;
 				bool spriteLimit;
 
@@ -415,6 +423,7 @@ namespace Nes
 			Chr chr;
 			Nmt nmt;
 			int scanline;
+			NmtMirroring mirrorType;
 
 			PpuModel model;
 			Hook hActiveHook;
@@ -542,19 +551,9 @@ namespace Nes
 				return oam.spriteLimit;
 			}
 			// Copy all pallete, oam, and nametable data to a byte array
-			byte * GetVRam() 
+			void * GetVRam() 
 			{
-				// Init array
-				byte *vRam;
-				int scrollSize = sizeof(Scroll);
-				vRam = new byte[32 + 256 + 2048 + scrollSize];
-				// Copy palette, oam, and nametable
-				memcpy(vRam, palette.ram, 32);
-				memcpy(vRam + 32, oam.ram, 256);
-				memcpy(vRam + 32 + 256, nameTable.ram, 2048);
-				memcpy(vRam + 32 + 256 + 2048, &scroll, scrollSize);
-
-				return vRam;
+				return &ppuSnapshot;
 			}
 		};
 	}

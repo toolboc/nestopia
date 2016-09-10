@@ -101,7 +101,7 @@ namespace Nes
 			void   InitializeInputDevices() const;
 			Result UpdateColorMode();
 			Result UpdateColorMode(ColorMode);
-			byte * GetVRam();
+			void *GetVRam();
 
 		private:
 
