@@ -599,7 +599,16 @@ namespace Nes
 		void Ppu::SetMirroring(const byte (&banks)[4])
 		{
 			Update( cycles.one );
-
+			int test;
+			test = 0;
+			if (banks[0] == 0 && banks[1] == 1)
+			{
+				mirrorType = NMT_V;
+			}
+			else if (banks[0] == 0 && banks[1] == 0)
+			{
+				mirrorType = NMT_H;
+			}
 			NST_ASSERT( banks[0] < 4 && banks[1] < 4 && banks[2] < 4 && banks[3] < 4 );
 			nmt.SwapBanks<SIZE_1K,0x0000>( banks[0], banks[1], banks[2], banks[3] );
 		}

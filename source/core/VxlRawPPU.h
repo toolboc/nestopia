@@ -163,12 +163,13 @@ inline void VxlRawPPU::reset(int mirrorType, bool oamPattern, bool namePattern)
 {
 	ScrollSnapshot rollover = scrollSnapshots[mostRecentScanlineModified];
 	scrollSnapshots.clear();
-	bool lastOAMPatternSelect = oamPatternSelect[mostRecentOamPatternScanline];
+	//bool lastOAMPatternSelect = oamPatternSelect[mostRecentOamPatternScanline];
 	oamPatternSelect.clear();
-	oamPatternSelect[0] = mostRecentOamPatternScanline;
+	oamPatternSelect[0] = oamPattern;
+	mostRecentOamPatternScanline = 0;
 	rollover.v = rollover.t;
+	rollover.patternSelect = namePattern;
 	scrollSnapshots[0] = rollover;
-	scrollSnapshots[0];
 	mirroring = mirrorType;
 	mostRecentScanlineModified = 0;
 }
