@@ -297,8 +297,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\core\NstPpu.hpp" />
-    <ClInclude Include="..\..\..\source\core\VxlRawPPU.h" />
-    <ClInclude Include="PPUSnapshot.h" />
+    <ClInclude Include="..\..\..\source\core\N3sRawPPU.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C4D4209C-05D5-404F-8925-BD7ABA58D686}</ProjectGuid>

@@ -35,7 +35,7 @@
 #include "NstMemory.hpp"
 #include "NstVideoScreen.hpp"
 #include <string>
-#include "VxlRawPPU.h"
+#include "N3sRawPpu.h"
 
 #ifdef NST_PRAGMA_ONCE
 #pragma once
@@ -128,7 +128,7 @@ namespace Nes
 
 		private:
 
-			VxlRawPPU ppuSnapshot = VxlRawPPU();
+			N3sRawPpu ppuSnapshot = N3sRawPpu();
 
 			std::string debugOutput = "";
 
