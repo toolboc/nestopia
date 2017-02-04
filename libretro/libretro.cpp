@@ -594,12 +594,12 @@ void retro_run(void)
 	   if (Api::Input(emulator).GetConnectedController(1) == 5)
 		   draw_crosshair(crossx, crossy);
    }
-   if (audio) {
-	   unsigned frames = is_pal ? 44100 / 50 : 44100 / 60;
-	    for (unsigned i = 0; i < frames; i++)
-	    audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
-	   audio_batch_cb(audio_stereo_buffer, frames);
-   }
+   //if (audio) {
+	  // unsigned frames = is_pal ? 44100 / 50 : 44100 / 60;
+	  //  for (unsigned i = 0; i < frames; i++)
+	  //  audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+	  // //audio_batch_cb(audio_stereo_buffer, frames);
+   //}
    
    if (video) {
 	   bool updated = false;
