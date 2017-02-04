@@ -327,11 +327,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutputFile>$(OutDir)msvc-2010$(TargetExt)</OutputFile>
-    <OutDir>..\..\..\..\NesVoxel\Debug</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutputFile>$(OutDir)msvc-2010$(TargetExt)</OutputFile>
-    <OutDir>..\..\..\..\NesVoxel\Release</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
